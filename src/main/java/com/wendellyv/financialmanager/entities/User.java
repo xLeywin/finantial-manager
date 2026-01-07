@@ -1,14 +1,18 @@
 package com.wendellyv.financialmanager.entities;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity
+@Table(name = "tb_user")
 public class User implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto insert + increment of the id
     private Long id;
-    private String name;
-    private String email;
-    private String password;
+    private String name, email, password;
 
     public User(Long id, String name, String email, String password) {
         this.id = id;
