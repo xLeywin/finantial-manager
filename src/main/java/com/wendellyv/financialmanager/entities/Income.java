@@ -1,6 +1,8 @@
 package com.wendellyv.financialmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wendellyv.financialmanager.enums.IncomeStatus;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -18,18 +20,25 @@ public class Income implements Serializable {
     private Double amount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT-3")
     private Instant date;
+    private IncomeStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "income_category_id")
+    private Category incomeCategory;
+
     public Income() {}
 
-    public Income(String title, Double amount, User user) {
+    public Income(String title, Double amount, User user, IncomeStatus status, Category incomeCategory) {
         this.title = title;
         this.amount = amount;
         date = Instant.now();
         this.user = user;
+        setStatus(status);
+        this.incomeCategory = incomeCategory;
     }
 
     public Long getId() {
@@ -60,8 +69,20 @@ public class Income implements Serializable {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public Category getIncomeCategory() {
+        return incomeCategory;
+    }
+
+    public void setIncomeCategory(Category incomeCategory) {
+        this.incomeCategory = incomeCategory;
+    }
+
+    public IncomeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(IncomeStatus status) {
+        this.status = status;
     }
 
     @Override
