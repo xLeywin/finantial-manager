@@ -3,6 +3,7 @@ package com.wendellyv.financialmanager.services;
 import com.wendellyv.financialmanager.entities.Income;
 import com.wendellyv.financialmanager.entities.User;
 import com.wendellyv.financialmanager.repositories.IncomeRepository;
+import com.wendellyv.financialmanager.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,8 @@ public class IncomeService {
     }
 
     public Income findById(Long id) {
-        Optional<Income> income = incomeRepository.findById(id);
-        return income.get();
+        Optional<Income> obj = incomeRepository.findById(id);
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public Income insert(Income income) {
