@@ -2,7 +2,6 @@ package com.wendellyv.financialmanager.resources.exceptions;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.stream.IntStream;
 
 public class StandardError implements Serializable {
 

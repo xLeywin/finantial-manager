@@ -1,7 +1,6 @@
 package com.wendellyv.financialmanager.resources;
 
 import com.wendellyv.financialmanager.entities.Category;
-import com.wendellyv.financialmanager.entities.Expense;
 import com.wendellyv.financialmanager.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = {"/categories", "/categories/"})
+@CrossOrigin(origins = "http://localhost:5173")
 public class CategoryResource {
 
     @Autowired

@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = {"/expenses", "/expenses/"})
+@CrossOrigin(origins = "http://localhost:5173")
 public class ExpenseResource {
 
     @Autowired

@@ -1,7 +1,6 @@
 package com.wendellyv.financialmanager.services;
 
 import com.wendellyv.financialmanager.entities.Income;
-import com.wendellyv.financialmanager.entities.User;
 import com.wendellyv.financialmanager.repositories.IncomeRepository;
 import com.wendellyv.financialmanager.services.exceptions.DatabaseException;
 import com.wendellyv.financialmanager.services.exceptions.ResourceNotFoundException;
