@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   justify-content: center; /* eixo horizontal */
-  align-items: center;     /* eixo vertical */
+  align-items: center; /* eixo vertical */
 }
 
 .container {
@@ -10,17 +10,26 @@
   max-width: 900px;
 }
 
-form{
+form {
   width: 500px;
   margin: 30px auto;
-
 }
 
-form input{
+form input {
   margin-bottom: 5px;
 }
 
-form input[type="button"]{
+form input[type="button"] {
   margin-top: 10px;
   margin: 5px;
+}
+
+.amount-income {
+  color: green;
+  font-weight: 600;
+}
+
+.amount-expense {
+  color: red;
+  font-weight: 600;
 }

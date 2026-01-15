@@ -1,8 +1,7 @@
-  import { useEffect, useState } from 'react';
-import { getIncomes } from './services/api';
-import Form from './components/Form';
-import Table from './components/Table';
-import './App.css';
+import { useEffect, useState } from "react";  
+import Form from "./components/Form";
+import Table from "./components/Table";
+import "./App.css";
 
 function App() {
   // UseStage
@@ -13,30 +12,29 @@ function App() {
 
   // UseEffect
   useEffect(() => {
-    fetch("http://localhost:8080/users")
-    .then(returnU => returnU.json())
-    .then(converted_return => setUser(converted_return));
+    fetch("http://localhost:8080/incomes")
+      .then((res) => res.json())
+      .then((data) => setIncomes(data));
 
+    fetch("http://localhost:8080/expenses")
+      .then((res) => res.json())
+      .then((data) => setExpenses(data));
   }, []);
+
+  const mergedData = [
+    ...incomes.map((i) => ({ ...i, type: "income" })),
+    ...expenses.map((e) => ({ ...e, type: "expense" })),
+  ].sort((a, b) => new Date(b.date) - new Date(a.date)); // Newer to older
 
   return (
     <div className="App">
       <div className="container">
-        <p>{JSON.stringify(users)}</p>
-        <Form button={btnRegister}/>
-        <Table />
+        <Form button={btnRegister} />
+
+        <Table data={mergedData} />
       </div>
     </div>
   );
-  /*
-  <ul>
-        {incomes.map(income => (
-          <li key={income.id}>
-            {income.description} - {income.amount}
-          </li>
-        ))}
-      </ul>
-  */
 }
 
 export default App;
