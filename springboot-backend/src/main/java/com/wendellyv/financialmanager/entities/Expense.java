@@ -1,6 +1,7 @@
 package com.wendellyv.financialmanager.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.wendellyv.financialmanager.enums.Category;
 import com.wendellyv.financialmanager.enums.ExpenseStatus;
 import jakarta.persistence.*;
 
@@ -20,25 +21,22 @@ public class Expense implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT-3")
     private Instant date;
     private ExpenseStatus status;
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "expense_category_id")
-    private Category expenseCategory;
-
     public Expense() {
     }
 
-    public Expense(String title, Double amount, User user, ExpenseStatus status, Category expenseCategory) {
+    public Expense(String title, Double amount, User user, ExpenseStatus status, Category category) {
         this.title = title;
         this.amount = amount;
         this.user = user;
-        this.expenseCategory = expenseCategory;
         date = Instant.now();
         setStatus(status);
+        setCategory(category);
     }
 
     public Long getId() {
@@ -69,20 +67,20 @@ public class Expense implements Serializable {
         return user;
     }
 
-    public Category getExpenseCategory() {
-        return expenseCategory;
-    }
-
-    public void setExpenseCategory(Category expenseCategory) {
-        this.expenseCategory = expenseCategory;
-    }
-
     public ExpenseStatus getStatus() {
         return status;
     }
 
     public void setStatus(ExpenseStatus status) {
         this.status = status;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
