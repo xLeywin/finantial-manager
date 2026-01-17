@@ -1,8 +1,7 @@
 .App {
   min-height: 100vh;
-  display: flex;
-  justify-content: center; /* eixo horizontal */
-  align-items: center; /* eixo vertical */
+  justify-content: center;
+  align-items: center;
 }
 
 .container {

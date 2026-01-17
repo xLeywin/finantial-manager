@@ -72,9 +72,24 @@ function App() {
     ...expenses.map((e) => ({ ...e, type: "expense" })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date)); // Newer first
 
+  // Select item
+  const selectItem = (item) => {
+    // 1. Populate the form with the item data
+    setFormData({
+      id: item.id, // Ensure ID is kept for future PUT/DELETE requests
+      title: item.title,
+      type: item.type,
+      status: item.status,
+      category: item.category || item.expenseCategory?.title || item.incomeCategory?.title,
+      amount: item.amount.toString(), // Convert number to string for the input field
+      });
+
+      setBtnRegister(false);
+    }
+
   return (
     <div className="App">
-      <div className="container">
+      <div >
         {/* Form */}
         <Form
           button={btnRegister}
@@ -84,7 +99,7 @@ function App() {
         />
 
         {/* Table */}
-        <Table data={mergedData} />
+        <Table data={mergedData} select={selectItem} />
       </div>
     </div>
   );
