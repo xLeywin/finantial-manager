@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 // Status configuration mapped by transaction type
 const STATUS_BY_TYPE = {
   income: [
@@ -37,6 +35,9 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
     // Numerical handling: convert comma to dot for backend compatibility
     if (name === "amount") {
       value = value.replace(",", ".");
+      // Removes any character that is not a number or period
+      // The Regex [^0-9.] means: "everything that is not 0 to 9 or period"
+      value = value.replace(/[^0-9]/g, "");
     }
 
     // Logical reset: if transaction type changes, clear the selected status

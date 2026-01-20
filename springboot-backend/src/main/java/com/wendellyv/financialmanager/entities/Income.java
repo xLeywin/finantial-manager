@@ -30,11 +30,22 @@ public class Income implements Serializable {
     public Income() {
     }
 
+    // Constructor with auto date
     public Income(String title, Double amount, User user, IncomeStatus status, Category category) {
         this.title = title;
         this.amount = amount;
         this.user = user;
         date = Instant.now();
+        setStatus(status);
+        setCategory(category);
+    }
+
+    // Constructor without auto date (test only)
+    public Income(String title, Double amount, User user, IncomeStatus status, Category category, Instant date) {
+        this.title = title;
+        this.amount = amount;
+        this.user = user;
+        this.date = date;
         setStatus(status);
         setCategory(category);
     }
@@ -85,7 +96,8 @@ public class Income implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Income income = (Income) o;
         return Objects.equals(id, income.id);
     }
@@ -93,5 +105,12 @@ public class Income implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (date == null) {
+            date = Instant.now();
+        }
     }
 }

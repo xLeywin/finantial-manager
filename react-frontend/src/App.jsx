@@ -65,11 +65,37 @@ function App() {
     loadData();
   };
 
+  // Table filters
+  const [filterMonth, setFilterMonth] = useState("");
+  const [filterYear, setFilterYear] = useState("");
+
+  const filterByMonthYear = (item) => {
+    if (!filterMonth && !filterYear) return true;
+
+    const d = new Date(item.date);
+
+    const monthMatch = !filterMonth || d.getMonth() + 1 === Number(filterMonth);
+
+    const yearMatch = !filterYear || d.getFullYear() === Number(filterYear);
+
+    return monthMatch && yearMatch;
+  };
+
   // Merge incomes and expenses into one table
   const mergedData = [
     ...incomes.map((i) => ({ ...i, type: "income" })),
     ...expenses.map((e) => ({ ...e, type: "expense" })),
-  ].sort((a, b) => new Date(b.date) - new Date(a.date)); // Newer first
+  ]
+    .filter(filterByMonthYear)
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  console.table(
+    mergedData.map((i) => ({
+      title: i.title,
+      date: i.date,
+      parsed: new Date(i.date).toISOString(),
+    })),
+  );
 
   // Select item
   const selectItem = (item) => {
@@ -79,10 +105,7 @@ function App() {
       title: item.title,
       type: item.type,
       status: item.status,
-      category:
-        item.category ||
-        item.expenseCategory?.title ||
-        item.incomeCategory?.title,
+      category: item.category,
       amount: item.amount.toString(), // Convert number to string for the input field
     });
 
@@ -155,13 +178,13 @@ function App() {
   };
 
   return (
-    <div>
-      <br></br> 
+    <div className="container mt-4">
       <div style={{ textAlign: "center", fontWeight: "bold" }}>
         <h1>Financial Manager</h1>
-        <h2>Gerenciador de Finanças</h2>
+        <h2 className="text-muted">Gerenciador de Finanças</h2>
       </div>
-      <br></br>
+
+      <br />
 
       {/* Form */}
       <Form
@@ -174,8 +197,21 @@ function App() {
         onUpdate={handleUpdate}
       />
 
-      {/* Table */}
-      <Table data={mergedData} select={selectItem} />
+      {/* Seção da Busca com Espaçamento */}
+      <div className="mt-5 mb-3">
+        {" "}
+        {/* mt-5 afasta do formulário, mb-3 afasta da tabela */}
+        <label className=" fw-bold fs-4">Buscar por mês</label>
+        {/* Table */}
+        <Table
+          data={mergedData}
+          select={selectItem}
+          filterMonth={filterMonth}
+          filterYear={filterYear}
+          onMonthChange={setFilterMonth}
+          onYearChange={setFilterYear}
+        />
+      </div>
     </div>
   );
 }

@@ -1,4 +1,11 @@
-function Table({ data, select }) {
+function Table({
+  data,
+  select,
+  filterMonth,
+  filterYear,
+  onMonthChange,
+  onYearChange,
+}) {
   // Currency formatter
   const formatCurrency = (value) =>
     new Intl.NumberFormat("pt-BR", {
@@ -28,39 +35,76 @@ function Table({ data, select }) {
     OTHER: "Outros",
   };
 
-  if (!data || data.length === 0) {
-    return <p className="text-center mt-4">Nenhum registro encontrado.</p>;
-  }
+  // Format date
+  const formatDate = (value) => {
+    if (!value) return "-";
+
+    return new Date(value).toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
 
   return (
-    <table className="table table-hover mt-4">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Título</th>
-          <th>Status</th>
-          <th>Categoria</th>
-          <th>Valor</th>
-          <th>Ação</th>
-        </tr>
-      </thead>
+    <div className="row g-2 mb-3">
+      <div className="col-auto">
+        <label className="form-label fw-bold">Mês</label>
+        <select
+          className="form-select"
+          value={filterMonth}
+          onChange={(e) => onMonthChange(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+      </div>
 
-      <tbody>
-        {data.map((obj, index) => {
-          // Logic to handle both string category and nested object category
-          const categoryKey =
-            obj.category ||
-            obj.expenseCategory?.title ||
-            obj.incomeCategory?.title;
-          const displayCategory =
-            categoryMap[categoryKey] || categoryKey || "-";
+      <div className="col-auto">
+        <label className="form-label fw-bold">Ano</label>
+        <select
+          className="form-select"
+          value={filterYear}
+          onChange={(e) => onYearChange(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
 
-          return (
-            <tr key={`${obj.type}-${obj.id || index}`}>
-              <td>{index + 1}</td>
+      <table className="table table-hover">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Status</th>
+            <th>Categoria</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {data.map((obj) => (
+            <tr key={`${obj.type}-${obj.id}`}>
               <td>{obj.title}</td>
               <td>{statusMap[obj.status] ?? obj.status}</td>
-              <td>{displayCategory}</td>
+              <td>{categoryMap[obj.category] ?? obj.category}</td>
               <td
                 style={{
                   color: obj.type === "income" ? "#28a745" : "#dc3545",
@@ -70,6 +114,7 @@ function Table({ data, select }) {
                 {obj.type === "income" ? "+ " : "- "}
                 {formatCurrency(obj.amount)}
               </td>
+              <td>{formatDate(obj.date)}</td>
               <td>
                 <button
                   className="btn btn-sm btn-outline-primary"
@@ -79,10 +124,10 @@ function Table({ data, select }) {
                 </button>
               </td>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
