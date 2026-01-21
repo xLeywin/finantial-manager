@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = {"/incomes", "/incomes/"})
+@RequestMapping(value = { "/incomes", "/incomes/" })
 @CrossOrigin(origins = "http://localhost:5173")
 public class IncomeResource {
 
@@ -19,9 +19,10 @@ public class IncomeResource {
     private IncomeService incomeService;
 
     @GetMapping
-    public ResponseEntity<List<Income>> findAll() {
-        List<Income> list = incomeService.findAll();
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<List<Income>> findAll(
+            @RequestParam Long userId) {
+        List<Income> list = incomeService.findByUser(userId);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping(value = "/{id}")
@@ -43,7 +44,7 @@ public class IncomeResource {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<Income> updateIncome(@PathVariable Long id, @RequestBody Income updatedIncome) {
-        updatedIncome =  incomeService.update(id, updatedIncome);
+        updatedIncome = incomeService.update(id, updatedIncome);
         return ResponseEntity.ok().body(updatedIncome);
     }
 

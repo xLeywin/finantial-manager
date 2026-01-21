@@ -33,12 +33,11 @@ public class ExpenseService {
     }
 
     public Expense update(Long id, Expense updatedExpense) {
-        try{
+        try {
             Expense currentExpense = expenseRepository.getReferenceById(id);
             updateExpense(currentExpense, updatedExpense);
             return expenseRepository.save(currentExpense);
-        }
-        catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
     }
@@ -50,14 +49,17 @@ public class ExpenseService {
     }
 
     public void deleteById(Long id) {
-        try{
+        try {
             expenseRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e){ // If there's no corresponding id
+        } catch (EmptyResultDataAccessException e) { // If there's no corresponding id
             throw new ResourceNotFoundException(id);
-        }
-        catch (DataIntegrityViolationException e){ // If it has associated items
+        } catch (DataIntegrityViolationException e) { // If it has associated items
             throw new DatabaseException(e.getMessage());
         }
     }
+
+    public List<Expense> findByUser(Long userId) {
+        return expenseRepository.findByUserId(userId);
+    }
+
 }

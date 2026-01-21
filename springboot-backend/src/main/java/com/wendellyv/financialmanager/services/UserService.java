@@ -33,12 +33,11 @@ public class UserService {
     }
 
     public User update(Long id, User updatedUser) {
-        try{
+        try {
             User currentUser = userRepository.getReferenceById(id);
             updateUser(currentUser, updatedUser);
             return userRepository.save(currentUser);
-        }
-        catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
     }
@@ -50,14 +49,17 @@ public class UserService {
     }
 
     public void deleteById(Long id) {
-        try{
+        try {
             userRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e){ // If there's no corresponding id
+        } catch (EmptyResultDataAccessException e) { // If there's no corresponding id
             throw new ResourceNotFoundException(id);
-        }
-        catch (DataIntegrityViolationException e){ // If it has associated items
+        } catch (DataIntegrityViolationException e) { // If it has associated items
             throw new DatabaseException(e.getMessage());
         }
     }
+
+    public User login(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password);
+    }
+
 }

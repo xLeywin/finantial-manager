@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = {"/expenses", "/expenses/"})
+@RequestMapping(value = { "/expenses", "/expenses/" })
 @CrossOrigin(origins = "http://localhost:5173")
 public class ExpenseResource {
 
@@ -19,9 +19,10 @@ public class ExpenseResource {
     private ExpenseService expenseService;
 
     @GetMapping
-    public ResponseEntity<List<Expense>> findAll() {
-        List<Expense> list = expenseService.findAll();
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<List<Expense>> findAll(
+            @RequestParam Long userId) {
+        List<Expense> list = expenseService.findByUser(userId);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping(value = "/{id}")
@@ -43,7 +44,7 @@ public class ExpenseResource {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody Expense updatedExpense) {
-        updatedExpense =  expenseService.update(id, updatedExpense);
+        updatedExpense = expenseService.update(id, updatedExpense);
         return ResponseEntity.ok().body(updatedExpense);
     }
 
