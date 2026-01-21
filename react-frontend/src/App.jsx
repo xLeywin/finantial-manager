@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Form from "./components/Form";
 import Table from "./components/Table";
+import Login from "./components/Login";
+import { api } from "./services/api";
 
 // Initial form structure
 const initialForm = {
@@ -12,6 +14,22 @@ const initialForm = {
 };
 
 function App() {
+  // Set user
+  const [user, setUser] = useState(() => {
+    return JSON.parse(localStorage.getItem("user"));
+  });
+
+  // Login Handle
+  const handleLogin = (userData) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
   // Button control (register / edit mode)
   const [btnRegister, setBtnRegister] = useState(true);
 
@@ -22,50 +40,54 @@ function App() {
   // Form data state
   const [formData, setFormData] = useState(initialForm);
 
-  // Load incomes and expenses from backend
-  const loadData = () => {
-    fetch("http://localhost:8080/incomes")
-      .then((res) => res.json())
-      .then(setIncomes);
+  // Load incomes and expenses
+  const loadData = async () => {
+    if (!user) return;
 
-    fetch("http://localhost:8080/expenses")
-      .then((res) => res.json())
-      .then(setExpenses);
+    try {
+      const [incomesRes, expensesRes] = await Promise.all([
+        api.get(`/incomes?userId=${user.id}`),
+        api.get(`/expenses?userId=${user.id}`),
+      ]);
+
+      setIncomes(incomesRes.data);
+      setExpenses(expensesRes.data);
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
+    }
   };
 
-  // Initial load
   useEffect(() => {
-    loadData();
-  }, []);
+    if (user) {
+      loadData();
+    }
+  }, [user]);
 
   // Save income or expense
   const handleSave = async (data) => {
-    // Endpoint selection based on type
-    const url =
-      data.type === "income"
-        ? "http://localhost:8080/incomes"
-        : "http://localhost:8080/expenses";
+    const endpoint = data.type === "income" ? "/incomes" : "/expenses";
 
-    // Payload sent to backend
     const payload = {
       title: data.title,
       amount: Number(data.amount),
       status: data.status,
       category: data.category,
+      user: { id: user.id },
     };
 
-    await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    if (!user) return;
 
-    // Reset form and reload table
-    setFormData(initialForm);
-    loadData();
+    try {
+      await api.post(endpoint, payload);
+
+      setFormData(initialForm);
+      loadData();
+    } catch (error) {
+      console.error("Erro ao salvar item:", error);
+    }
   };
 
-  // Table filters
+  // Filters
   const [filterMonth, setFilterMonth] = useState("");
   const [filterYear, setFilterYear] = useState("");
 
@@ -81,7 +103,7 @@ function App() {
     return monthMatch && yearMatch;
   };
 
-  // Merge incomes and expenses into one table
+  // Merge incomes and expenses
   const mergedData = [
     ...incomes.map((i) => ({ ...i, type: "income" })),
     ...expenses.map((e) => ({ ...e, type: "expense" })),
@@ -89,30 +111,21 @@ function App() {
     .filter(filterByMonthYear)
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  console.table(
-    mergedData.map((i) => ({
-      title: i.title,
-      date: i.date,
-      parsed: new Date(i.date).toISOString(),
-    })),
-  );
-
   // Select item
   const selectItem = (item) => {
-    // 1. Populate the form with the item data
     setFormData({
-      id: item.id, // Ensure ID is kept for future PUT/DELETE requests
+      id: item.id,
       title: item.title,
       type: item.type,
       status: item.status,
       category: item.category,
-      amount: item.amount.toString(), // Convert number to string for the input field
+      amount: item.amount.toString(),
     });
 
     setBtnRegister(false);
   };
 
-  // Function to reset form and buttons
+  // Reset form
   const handleCancel = () => {
     setFormData(initialForm);
     setBtnRegister(true);
@@ -125,23 +138,18 @@ function App() {
       return;
     }
 
-    // Endpoint selection based on type
-    const url =
+    const endpoint =
       formData.type === "income"
-        ? `http://localhost:8080/incomes/${formData.id}`
-        : `http://localhost:8080/expenses/${formData.id}`;
+        ? `/incomes/${formData.id}`
+        : `/expenses/${formData.id}`;
 
     try {
-      const response = await fetch(url, { method: "DELETE" });
+      await api.delete(endpoint);
 
-      if (response.ok) {
-        handleCancel(); // Clear form and reset buttons using the function we made before
-        loadData(); // Refresh the table
-      } else {
-        console.error("Failed to remove the item.");
-      }
+      handleCancel();
+      loadData();
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Erro ao remover item:", error);
     }
   };
 
@@ -149,10 +157,10 @@ function App() {
   const handleUpdate = async () => {
     if (!formData.id) return;
 
-    const url =
+    const endpoint =
       formData.type === "income"
-        ? `http://localhost:8080/incomes/${formData.id}`
-        : `http://localhost:8080/expenses/${formData.id}`;
+        ? `/incomes/${formData.id}`
+        : `/expenses/${formData.id}`;
 
     const payload = {
       title: formData.title,
@@ -162,31 +170,30 @@ function App() {
     };
 
     try {
-      const response = await fetch(url, {
-        method: "PUT", // Method for updating
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      await api.put(endpoint, payload);
 
-      if (response.ok) {
-        handleCancel();
-        loadData();
-      }
+      handleCancel();
+      loadData();
     } catch (error) {
-      console.error("Error updating item:", error);
+      console.error("Erro ao atualizar item:", error);
     }
   };
 
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
+  }
   return (
     <div className="container mt-4">
       <div style={{ textAlign: "center", fontWeight: "bold" }}>
         <h1>Financial Manager</h1>
         <h2 className="text-muted">Gerenciador de Finanças</h2>
       </div>
+      <button onClick={handleLogout} className="btn btn-sm btn-outline-danger">
+        Sair
+      </button>
 
       <br />
 
-      {/* Form */}
       <Form
         button={btnRegister}
         formData={formData}
@@ -197,12 +204,9 @@ function App() {
         onUpdate={handleUpdate}
       />
 
-      {/* Seção da Busca com Espaçamento */}
       <div className="mt-5 mb-3">
-        {" "}
-        {/* mt-5 afasta do formulário, mb-3 afasta da tabela */}
-        <label className=" fw-bold fs-4">Buscar por mês</label>
-        {/* Table */}
+        <label className="fw-bold fs-4">Buscar por mês</label>
+
         <Table
           data={mergedData}
           select={selectItem}

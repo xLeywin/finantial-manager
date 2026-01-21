@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = {"/users", "/users/"})
+@RequestMapping(value = { "/users", "/users/" })
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserResource {
 
@@ -34,16 +34,16 @@ public class UserResource {
     public ResponseEntity<User> insertUser(@RequestBody User user) {
         user = userService.insert(user);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                                             .path("/{id}")
-                                             .buildAndExpand(user.getId())
-                                             .toUri();
+                .path("/{id}")
+                .buildAndExpand(user.getId())
+                .toUri();
 
         return ResponseEntity.created(uri).body(user);
     }
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        updatedUser =  userService.update(id, updatedUser);
+        updatedUser = userService.update(id, updatedUser);
         return ResponseEntity.ok().body(updatedUser);
     }
 
@@ -51,5 +51,13 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody User user) {
+        User loggedUser = userService.login(
+                user.getEmail(),
+                user.getPassword());
+        return ResponseEntity.ok().body(loggedUser);
     }
 }

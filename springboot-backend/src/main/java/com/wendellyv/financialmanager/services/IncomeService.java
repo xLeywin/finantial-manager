@@ -33,12 +33,11 @@ public class IncomeService {
     }
 
     public Income update(Long id, Income updatedIncome) {
-        try{
+        try {
             Income currentIncome = incomeRepository.getReferenceById(id);
             updateIncome(currentIncome, updatedIncome);
             return incomeRepository.save(currentIncome);
-        }
-        catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
     }
@@ -50,14 +49,16 @@ public class IncomeService {
     }
 
     public void deleteById(Long id) {
-        try{
+        try {
             incomeRepository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e){ // If there's no corresponding id
+        } catch (EmptyResultDataAccessException e) { // If there's no corresponding id
             throw new ResourceNotFoundException(id);
-        }
-        catch (DataIntegrityViolationException e){ // If it has associated items
+        } catch (DataIntegrityViolationException e) { // If it has associated items
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    public List<Income> findByUser(Long userId) {
+        return incomeRepository.findByUserId(userId);
     }
 }
