@@ -100,31 +100,41 @@ function Table({
         </thead>
 
         <tbody>
-          {data.map((obj) => (
-            <tr key={`${obj.type}-${obj.id}`}>
-              <td>{obj.title}</td>
-              <td>{statusMap[obj.status] ?? obj.status}</td>
-              <td>{categoryMap[obj.category] ?? obj.category}</td>
-              <td
-                style={{
-                  color: obj.type === "income" ? "#28a745" : "#dc3545",
-                  fontWeight: "bold",
-                }}
-              >
-                {obj.type === "income" ? "+ " : "- "}
-                {formatCurrency(obj.amount)}
-              </td>
-              <td>{formatDate(obj.date)}</td>
-              <td>
-                <button
-                  className="btn btn-sm btn-outline-dark"
-                  onClick={() => select(obj)}
-                >
-                  Selecionar
-                </button>
+          {data.length === 0 ? (
+            // Has no items
+            <tr>
+              <td colSpan="6" className="text-center">
+                Não há itens salvos.
               </td>
             </tr>
-          ))}
+          ) : (
+            // Has items
+            data.map((obj) => (
+              <tr key={`${obj.type}-${obj.id}`}>
+                <td>{obj.title}</td>
+                <td>{statusMap[obj.status] ?? obj.status}</td>
+                <td>{categoryMap[obj.category] ?? obj.category}</td>
+                <td
+                  style={{
+                    color: obj.type === "income" ? "#28a745" : "#dc3545",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {obj.type === "income" ? "+ " : "- "}
+                  {formatCurrency(obj.amount)}
+                </td>
+                <td>{formatDate(obj.date)}</td>
+                <td>
+                  <button
+                    className="btn btn-sm btn-outline-dark"
+                    onClick={() => select(obj)}
+                  >
+                    Selecionar
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

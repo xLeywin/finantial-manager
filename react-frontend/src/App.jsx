@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Form from "./components/Form";
 import Table from "./components/Table";
 import Login from "./components/Login";
+import UpdUser from "./components/UpdUser";
 import { api } from "./services/api";
 
 // Initial form structure
@@ -39,6 +40,15 @@ function App() {
 
   // Form data state
   const [formData, setFormData] = useState(initialForm);
+
+  // Update user
+  const [isUpdatingUser, setIsUpdatingUser] = useState(false);
+
+  const handleUserUpdated = (updatedData) => {
+    localStorage.setItem("user", JSON.stringify(updatedData));
+    setUser(updatedData);
+    setIsUpdatingUser(false); // Return to main screen
+  };
 
   // Load incomes and expenses
   const loadData = async () => {
@@ -182,6 +192,15 @@ function App() {
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
+  if (isUpdatingUser) {
+    return (
+      <UpdUser
+        user={user}
+        onUpdate={handleUserUpdated}
+        onCancel={() => setIsUpdatingUser(false)}
+      />
+    );
+  }
   return (
     <div className="container mt-4">
       <div style={{ textAlign: "center", fontWeight: "bold" }}>
@@ -190,6 +209,11 @@ function App() {
       </div>
       <button onClick={handleLogout} className="btn btn-sm btn-outline-danger">
         Sair
+      </button>
+
+    
+      <button onClick={() => setIsUpdatingUser(true)} className="btn btn-sm btn-outline">
+        Perfil
       </button>
 
       <br />
