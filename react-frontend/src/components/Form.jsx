@@ -32,11 +32,11 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
   const handleChange = (e) => {
     let { name, value } = e.target;
 
-    // Numerical handling: convert comma to dot for backend compatibility
+    // Convert comma to dot for backend compatibility
     if (name === "amount") {
       value = value.replace(",", ".");
-      // Removes any character that is not a number or period
-      // The Regex [^0-9.] means: "everything that is not 0 to 9 or period"
+
+      // The Regex [^0-9.] means "everything that is not 0 to 9 or period"
       value = value.replace(/[^0-9.]/g, "");
     }
 

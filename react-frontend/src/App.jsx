@@ -207,12 +207,13 @@ function App() {
         <h1>Financial Manager</h1>
         <h2 className="text-muted">Gerenciador de Finanças</h2>
       </div>
-      <button onClick={handleLogout} className="btn btn-sm btn-outline-danger">
+      
+      <button onClick={handleLogout} className="btn btn-sm btn-outline-danger me-2">
         Sair
       </button>
 
     
-      <button onClick={() => setIsUpdatingUser(true)} className="btn btn-sm btn-outline">
+      <button onClick={() => setIsUpdatingUser(true)} className="btn btn-sm btn-outline-dark">
         Perfil
       </button>
 

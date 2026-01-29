@@ -36,7 +36,7 @@ public class TestConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         User u1 = new User("Caio", "caio232@gmail.com", "61912345");
-        User u2 = new User("Maria", "maria54@gmail.com", "245675643d");
+        User u2 = new User("Maria", "maria54@gmail.com", "245675643");
         userRepository.saveAll(Arrays.asList(u1, u2));
 
         Income income1 = new Income("Salário", 2900.00, u1, IncomeStatus.RECEIVED, Category.SALARY, randomDate(2023, 2024));

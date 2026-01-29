@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { api } from "../services/api";
+import {
+  isNameValid,
+  isEmailValid,
+  isPasswordValid,
+} from "../utils/validators";
 
 function Login({ onLogin }) {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -10,7 +15,7 @@ function Login({ onLogin }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
+
     try {
       const response = await api.post("/users/login", {
         email,
@@ -20,14 +25,36 @@ function Login({ onLogin }) {
       localStorage.setItem("user", JSON.stringify(response.data));
       onLogin(response.data);
     } catch (error) {
+      console.error("Login Error Details:", error.response?.data); // Add this
       if (error.response?.status === 401) {
         setErrorMessage("E-mail ou senha inválidos");
+      } else {
+        setErrorMessage("Ocorreu um erro inesperado. Tente novamente.");
       }
     }
   }
 
+  const handleChange = (value) => {
+    const nameFiltered = value.replace(/[^A-Za-zÀ-ÿ\s]/g, "");
+    setName(nameFiltered);
+  };
+
   async function handleRegister(e) {
     e.preventDefault();
+
+    if (!isNameValid(name)) {
+      setErrorMessage("Nome inválido.");
+      return;
+    }
+    if (!isEmailValid(email)) {
+      setErrorMessage("E-mail inválido.");
+      return;
+    }
+    if (!isPasswordValid(password)) {
+      setErrorMessage("Senha não atende aos requisitos.");
+      return;
+    }
+
     try {
       await api.post("/users", { name, email, password });
       alert("Conta criada com sucesso! Agora faça seu login.");
@@ -55,7 +82,10 @@ function Login({ onLogin }) {
         <br />
         <br />
 
-        <form className="login-form" onSubmit={isRegistering ? handleRegister : handleSubmit}>
+        <form
+          className="login-form"
+          onSubmit={isRegistering ? handleRegister : handleSubmit}
+        >
           <h2 className="h2-login">
             {isRegistering ? "Criar Conta" : "Login"}
           </h2>
@@ -69,7 +99,7 @@ function Login({ onLogin }) {
                 type="text"
                 placeholder="Nome completo"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => handleChange(e.target.value)}
                 required
               />
             )}
@@ -106,6 +136,19 @@ function Login({ onLogin }) {
                   : "Não possui conta? Cadastre-se"}
               </button>
             </div>
+            {isRegistering && (
+              <div className="mt-4">
+                <h5>Requisitos da conta</h5>
+                <ul>
+                  <li>Nome válido (apenas letras e espaços)</li>
+                  <li>E-mail válido</li>
+                  <li>Senha com no mínimo 14 caracteres</li>
+                  <li>Ao menos 1 letra maiúscula e 1 minúscula</li>
+                  <li>Ao menos 1 caractere especial (@, $, %, etc)</li>
+                  <li>Ao menos 4 números</li>
+                </ul>
+              </div>
+            )}
           </div>
         </form>
       </div>
