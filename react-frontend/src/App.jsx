@@ -66,7 +66,7 @@ function App() {
       setIncomes(incomesRes.data);
       setExpenses(expensesRes.data);
     } catch (error) {
-      console.error("Erro ao carregar dados:", error);
+      toast.error("Erro ao carregar dados:", error);
     }
   };
 
@@ -191,19 +191,7 @@ function App() {
       console.error("Erro ao atualizar item:", error);
     }
   };
-
-  // if (!user) {
-  //   return <Login onLogin={handleLogin} />;
-  // }
-  // if (isUpdatingUser) {
-  //   return (
-  //     <UpdUser
-  //       user={user}
-  //       onUpdate={handleUserUpdated}
-  //       onCancel={() => setIsUpdatingUser(false)}
-  //     />
-  //   );
-  // }
+  
   return (
     <>
       <ToastContainer

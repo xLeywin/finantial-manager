@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 // Status configuration mapped by transaction type
 const STATUS_BY_TYPE = {
   income: [
@@ -27,8 +29,15 @@ const CATEGORIES = [
   { value: "OTHER", label: "Outros" },
 ];
 
-function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onUpdate }) {
-  // Unified handler for all input changes
+function Form({
+  button,
+  formData,
+  setFormData,
+  onSubmit,
+  onCancel,
+  onRemove,
+  onUpdate,
+}) {
   const handleChange = (e) => {
     let { name, value } = e.target;
 
@@ -58,7 +67,26 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
   // Form submission handler
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      onSubmit(formData);
+      toast.success("Item cadastrado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao cadastrar item.");
+    }
+  };
+
+  const handleRemove = () => {
+    try {
+      onRemove();
+      toast.warning("Item removido.");
+    } catch (error) {
+      toast.error("Erro ao remover item.");
+    }
+  };
+
+  const handleUpdate = async () => {
+    await onUpdate();
+    toast.info("Atualizado com sucesso!");
   };
 
   return (
@@ -66,7 +94,7 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
       onSubmit={handleSubmit}
       className="p-4 border rounded bg-white shadow-sm"
     >
-      {/* Title Field */}
+      {/* Title */}
       <div className="mb-3">
         <label className="form-label fw-bold">Descrição</label>
         <input
@@ -80,7 +108,7 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
       </div>
 
       <div className="row">
-        {/* Transaction Type Selection */}
+        {/* Type Selection */}
         <div className="col-md-6 mb-3">
           <label className="form-label fw-bold">Tipo</label>
           <select
@@ -96,7 +124,7 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
           </select>
         </div>
 
-        {/* Dynamic Status Selection (Depends on Type) */}
+        {/* Dynamic Status Selection */}
         <div className="col-md-6 mb-3">
           <label className="form-label fw-bold">Status</label>
           <select
@@ -153,7 +181,7 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
         </div>
       </div>
 
-      {/* Centered Button Section */}
+      {/* Button Section */}
       <div className="d-flex justify-content-center gap-2 mt-4">
         {button ? (
           <button type="submit" className="btn btn-dark px-5 fw-bold">
@@ -161,18 +189,14 @@ function Form({ button, formData, setFormData, onSubmit, onCancel, onRemove, onU
           </button>
         ) : (
           <>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-warning"
-              onClick={onUpdate}
+              onClick={handleUpdate}
             >
               Alterar
             </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={onRemove}
-            >
+            <button type="button" className="btn btn-danger" onClick={handleRemove}>
               Remover
             </button>
             <button
