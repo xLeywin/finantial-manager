@@ -1,7 +1,11 @@
 package com.wendellyv.financialmanager.services;
 
+import com.wendellyv.financialmanager.entities.Expense;
 import com.wendellyv.financialmanager.entities.Income;
+import com.wendellyv.financialmanager.entities.User;
+import com.wendellyv.financialmanager.enums.UserRole;
 import com.wendellyv.financialmanager.repositories.IncomeRepository;
+import com.wendellyv.financialmanager.repositories.UserRepository;
 import com.wendellyv.financialmanager.services.exceptions.DatabaseException;
 import com.wendellyv.financialmanager.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +22,9 @@ public class IncomeService {
 
     @Autowired
     private IncomeRepository incomeRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Income> findAll() {
         return incomeRepository.findAll();
@@ -57,8 +64,15 @@ public class IncomeService {
             throw new DatabaseException(e.getMessage());
         }
     }
+    
+    public List<Income> findAll(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException(userId));
 
-    public List<Income> findByUser(Long userId) {
+        if (user.getRole() == UserRole.ADMIN) {
+            return incomeRepository.findAll();
+        }
+
         return incomeRepository.findByUserId(userId);
     }
 }

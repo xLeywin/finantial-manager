@@ -38,6 +38,8 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
+    setIncomes([]);
+    setExpenses([]);
   };
 
   // Button control (register / edit mode)
@@ -59,6 +61,8 @@ function App() {
     setIsUpdatingUser(false); // Return to main screen
   };
 
+  const isAdmin = user?.role === "ADMIN";
+
   // Load incomes and expenses
   const loadData = async () => {
     if (!user) return;
@@ -72,7 +76,8 @@ function App() {
       setIncomes(incomesRes.data);
       setExpenses(expensesRes.data);
     } catch (error) {
-      toast.error("Erro ao carregar dados:", error);
+      console.error(error);
+      toast.error("Erro ao carregar dados");
     }
   };
 
@@ -113,7 +118,7 @@ function App() {
   const filterByMonthYear = (item) => {
     if (!filterMonth && !filterYear) return true;
 
-    const d = new Date(item.date);
+    const d = new LocalDate(item.date);
 
     const monthMatch = !filterMonth || d.getMonth() + 1 === Number(filterMonth);
 
@@ -262,16 +267,18 @@ function App() {
                 <br />
                 <br />
 
-                {/* Form data state */}
-                <Form
-                  button={btnRegister}
-                  formData={formData}
-                  setFormData={setFormData}
-                  onSubmit={handleSave}
-                  onCancel={handleCancel}
-                  onRemove={handleRemove}
-                  onUpdate={handleUpdate}
-                />
+                {/* Form data state. Admin can only read */}
+                {!isAdmin && (
+                  <Form
+                    button={btnRegister}
+                    formData={formData}
+                    setFormData={setFormData}
+                    onSubmit={handleSave}
+                    onCancel={handleCancel}
+                    onRemove={handleRemove}
+                    onUpdate={handleUpdate}
+                  />
+                )}
 
                 {/* Backend data */}
                 <div className="mt-5 mb-3">
