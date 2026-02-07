@@ -1,5 +1,7 @@
 package com.wendellyv.financialmanager.resources;
 
+import com.wendellyv.financialmanager.dto.LoginDTO;
+import com.wendellyv.financialmanager.dto.UserDTO;
 import com.wendellyv.financialmanager.entities.User;
 import com.wendellyv.financialmanager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +55,9 @@ public class UserResource {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
-        User loggedUser = userService.login(
-                user.getEmail(),
-                user.getPassword());
-        return ResponseEntity.ok().body(loggedUser);
+    @PostMapping(value = { "/login", "/login/" })
+    public ResponseEntity<UserDTO> login(@RequestBody LoginDTO dto) {
+        User user = userService.login(dto.getEmail(), dto.getPassword());
+        return ResponseEntity.ok(new UserDTO(user));
     }
 }

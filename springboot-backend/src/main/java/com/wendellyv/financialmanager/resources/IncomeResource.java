@@ -1,5 +1,6 @@
 package com.wendellyv.financialmanager.resources;
 
+import com.wendellyv.financialmanager.entities.Expense;
 import com.wendellyv.financialmanager.entities.Income;
 import com.wendellyv.financialmanager.services.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,9 @@ public class IncomeResource {
     private IncomeService incomeService;
 
     @GetMapping
-    public ResponseEntity<List<Income>> findAll(
-            @RequestParam Long userId) {
-        List<Income> list = incomeService.findByUser(userId);
-        return ResponseEntity.ok(list);
-    }
+    public ResponseEntity<List<Income>> findAll(@RequestParam Long userId) {
+    return ResponseEntity.ok(incomeService.findAll(userId));
+}
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Income> findById(@PathVariable Long id) {

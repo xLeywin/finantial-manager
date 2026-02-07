@@ -19,6 +19,11 @@ function Login({ onLogin }) {
     e.preventDefault();
 
     try {
+      if (!email || !password) {
+        toast.warn("Por favor, preencha todos os campos.");
+        return;
+      }
+
       const response = await api.post("/users/login", {
         email,
         password,
@@ -31,6 +36,7 @@ function Login({ onLogin }) {
         toast.error("E-mail ou senha inválidos");
       } else {
         toast.error("Ocorreu um erro inesperado. Tente novamente.");
+        console.log(error);
       }
     }
   }

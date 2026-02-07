@@ -1,6 +1,7 @@
 package com.wendellyv.financialmanager.services;
 
 import com.wendellyv.financialmanager.entities.User;
+import com.wendellyv.financialmanager.enums.UserRole;
 import com.wendellyv.financialmanager.repositories.UserRepository;
 import com.wendellyv.financialmanager.services.exceptions.DatabaseException;
 import com.wendellyv.financialmanager.services.exceptions.ResourceNotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,6 +23,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
@@ -31,6 +36,8 @@ public class UserService {
     }
 
     public User insert(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(UserRole.USER);
         return userRepository.save(user);
     }
 
@@ -61,16 +68,13 @@ public class UserService {
     }
 
     public User login(String email, String password) {
-        User user = userRepository.findByEmailAndPassword(email, password);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found."));
 
-        if (user == null) {
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "Invalid user."
-            );
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password.");
         }
 
         return user;
     }
-
 }

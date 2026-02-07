@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.wendellyv.financialmanager.enums.UserRole;
+
 @Entity
 @Table(name = "tb_user")
 public class User implements Serializable {
@@ -14,13 +16,18 @@ public class User implements Serializable {
     private Long id;
     private String name, email, password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
     public User() {
     }
 
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, UserRole role) {
         this.name = name;
         this.email = email;
         this.password = password;
+        setRole(role);
     }
 
     public Long getId() {
@@ -49,6 +56,14 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     @Override

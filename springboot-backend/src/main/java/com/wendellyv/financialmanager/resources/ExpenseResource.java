@@ -19,11 +19,9 @@ public class ExpenseResource {
     private ExpenseService expenseService;
 
     @GetMapping
-    public ResponseEntity<List<Expense>> findAll(
-            @RequestParam Long userId) {
-        List<Expense> list = expenseService.findByUser(userId);
-        return ResponseEntity.ok(list);
-    }
+    public ResponseEntity<List<Expense>> findAll(@RequestParam Long userId) {
+    return ResponseEntity.ok(expenseService.findAll(userId));
+}
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Expense> findById(@PathVariable Long id) {
