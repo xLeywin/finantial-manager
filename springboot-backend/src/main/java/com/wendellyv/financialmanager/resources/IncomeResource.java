@@ -1,6 +1,5 @@
 package com.wendellyv.financialmanager.resources;
 
-import com.wendellyv.financialmanager.entities.Expense;
 import com.wendellyv.financialmanager.entities.Income;
 import com.wendellyv.financialmanager.services.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;

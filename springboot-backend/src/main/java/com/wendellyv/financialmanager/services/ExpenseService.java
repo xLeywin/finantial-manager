@@ -1,7 +1,6 @@
 package com.wendellyv.financialmanager.services;
 
 import com.wendellyv.financialmanager.entities.Expense;
-import com.wendellyv.financialmanager.entities.Income;
 import com.wendellyv.financialmanager.entities.User;
 import com.wendellyv.financialmanager.enums.UserRole;
 import com.wendellyv.financialmanager.repositories.ExpenseRepository;
