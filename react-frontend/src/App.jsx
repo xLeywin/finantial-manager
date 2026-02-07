@@ -10,6 +10,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,7 +24,9 @@ const initialForm = {
   amount: "",
 };
 
-function App() {
+function AppRoutes() {
+  const navigate = useNavigate();
+
   // Set user
   const [user, setUser] = useState(() => {
     return JSON.parse(localStorage.getItem("user"));
@@ -40,6 +43,7 @@ function App() {
     setUser(null);
     setIncomes([]);
     setExpenses([]);
+    navigate("/login");
   };
 
   // Button control (register / edit mode)
@@ -58,7 +62,8 @@ function App() {
   const handleUserUpdated = (updatedData) => {
     localStorage.setItem("user", JSON.stringify(updatedData));
     setUser(updatedData);
-    setIsUpdatingUser(false); // Return to main screen
+    setIsUpdatingUser(false);
+    navigate("/");
   };
 
   const isAdmin = user?.role === "ADMIN";
@@ -118,10 +123,9 @@ function App() {
   const filterByMonthYear = (item) => {
     if (!filterMonth && !filterYear) return true;
 
-    const d = new LocalDate(item.date);
+    const d = new Date(item.date);
 
     const monthMatch = !filterMonth || d.getMonth() + 1 === Number(filterMonth);
-
     const yearMatch = !filterYear || d.getFullYear() === Number(filterYear);
 
     return monthMatch && yearMatch;
@@ -204,7 +208,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <>
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -230,7 +234,7 @@ function App() {
               <UpdUser
                 user={user}
                 onUpdate={handleUserUpdated}
-                onCancel={() => window.history.back()}
+                onCancel={() => navigate("/")}
               />
             ) : (
               <Navigate to="/login" />
@@ -258,7 +262,7 @@ function App() {
 
                 {/* Navigation to /profile */}
                 <button
-                  onClick={() => (window.location.href = "/profile")}
+                  onClick={() => navigate("/profile")}
                   className="btn btn-sm btn-outline-dark"
                 >
                   Perfil
@@ -290,6 +294,7 @@ function App() {
                     filterYear={filterYear}
                     onMonthChange={setFilterMonth}
                     onYearChange={setFilterYear}
+                    isAdmin={isAdmin}
                   />
                 </div>
               </div>
@@ -302,8 +307,14 @@ function App() {
         {/* Fallback route for paths not found */}
         <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppRoutes />
+    </Router>
+  );
+}

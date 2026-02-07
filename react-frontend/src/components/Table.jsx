@@ -5,6 +5,7 @@ function Table({
   filterYear,
   onMonthChange,
   onYearChange,
+  isAdmin,
 }) {
   // Currency formatter
   const formatCurrency = (value) =>
@@ -90,6 +91,7 @@ function Table({
       <table className="table table-hover">
         <thead>
           <tr>
+            {isAdmin && <th>Usuário</th>}
             <th>Título</th>
             <th>Status</th>
             <th>Categoria</th>
@@ -103,7 +105,7 @@ function Table({
           {data.length === 0 ? (
             // Has no items
             <tr>
-              <td colSpan="6" className="text-center">
+              <td colSpan={isAdmin ? 7 : 6} className="text-center">
                 Não há itens salvos.
               </td>
             </tr>
@@ -111,6 +113,7 @@ function Table({
             // Has items
             data.map((obj) => (
               <tr key={`${obj.type}-${obj.id}`}>
+                {isAdmin && <td>{obj.user?.name ?? "-"}</td>}
                 <td>{obj.title}</td>
                 <td>{statusMap[obj.status] ?? obj.status}</td>
                 <td>{categoryMap[obj.category] ?? obj.category}</td>
