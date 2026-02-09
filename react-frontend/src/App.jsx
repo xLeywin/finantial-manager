@@ -6,7 +6,7 @@ import UpdUser from "./components/UpdUser";
 import { useEffect, useState, useMemo, memo, useCallback } from "react";
 import { api } from "./services/api";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,

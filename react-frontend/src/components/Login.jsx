@@ -76,7 +76,7 @@ function Login({ onLogin }) {
       <div className="login-container">
         <div className="login-header">
           <img
-            src="/assets/favicon-fm.ico"
+            src={`${import.meta.env.BASE_URL}assets/favicon-fm.ico`}
             alt="Financial Manager"
             className="login-logo"
           />
