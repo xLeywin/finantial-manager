@@ -6,6 +6,8 @@ import {
   isPasswordValid,
 } from "../utils/validators";
 
+import logo from "../assets/favicon-fm.ico";
+
 import { toast } from "react-toastify";
 
 function Login({ onLogin }) {
@@ -75,7 +77,7 @@ function Login({ onLogin }) {
       <div className="login-container">
         <div className="login-header">
           <img
-            src={`${import.meta.env.BASE_URL}assets/favicon-fm.ico`}
+            src={logo}
             alt="Financial Manager"
             className="login-logo"
           />
