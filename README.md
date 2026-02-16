@@ -26,6 +26,15 @@ Frontend construído com React, responsável por:
 - Autenticação de usuário (pring Security e JWT)
 - Consumo da API pelo frontend React<br><br>
 
+### Cadastrar
+![Cadastrar](https://raw.githubusercontent.com/xLeywin/Assets/main/financial-manager/Cadastrar.gif)<br><br>
+### Editar
+![Editar](https://raw.githubusercontent.com/xLeywin/Assets/main/financial-manager/Editar.gif)<br><br>
+### Remover
+![Remover](https://raw.githubusercontent.com/xLeywin/Assets/main/financial-manager/Remover.gif)<br><br>
+### Filtros + Acesso Admin (Filtro por usuário e todos itens)
+![FiltrosADM](https://raw.githubusercontent.com/xLeywin/Assets/main/financial-manager/FiltrosADM.gif)<br><br>
+
 ## Acesso à Aplicação
 A aplicação pode ser acessada pelo link: https://wendellyv-fiancialmanager.netlify.app  
     
